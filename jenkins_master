@@ -1,0 +1,40 @@
+apt-get update -y
+apt-get install openjdk-11-jdk gnupg2 -y
+java -version
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
+sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+apt-get update -y
+apt-get install jenkins -y
+systemctl status jenkins
+netstat -plntu | grep 8080
+apt-get install apache2 -y
+a2enmod proxy
+a2enmod proxy-http
+a2enmod proxy_http
+
+nano /etc/apache2/sites-available/jenkins.conf
+=================================================
+<Virtualhost *:80>
+    ServerName        jenkins.example.com
+    ProxyRequests     Off
+    ProxyPreserveHost On
+    AllowEncodedSlashes NoDecode
+
+    <Proxy http://localhost:8080/>
+      Order deny,allow
+      Allow from all
+    </Proxy>
+
+    ProxyPass         /  http://localhost:8080/ nocanon
+    ProxyPassReverse  /  http://localhost:8080/
+    ProxyPassReverse  /  http://jenkins.hakase-labs.io/
+</Virtualhost>
+
+=========================================================
+nano /etc/apache2/sites-available/jenkins.conf
+a2ensite jenkins
+systemctl reload apache2
+systemctl restart jenkins
+systemctl status apache2
+systemctl enable jenkins
+systemctl enable apache2

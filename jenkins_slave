@@ -1,0 +1,13 @@
+ssh-keygen -t rsa -f key_rsa
+apt install software-properties-common apt-transport-https -y
+apt-get update -y
+apt install software-properties-common apt-transport-https -y
+add-apt-repository ppa:openjdk-r/ppa -y
+apt install openjdk-8-jdk -y
+java -version
+apt-get install openjdk-11-jdk gnupg2 -y
+useradd -m -s /bin/bash jenkins
+passwd jenkins
+cat .ssh/key_rsa
+
+copied the key file to jenkins portal
